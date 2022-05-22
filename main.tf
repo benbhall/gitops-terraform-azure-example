@@ -5,14 +5,17 @@ terraform {
     container_name       = "gitopsdemotfstates"
     key                  = "gitopsdemo.tfstate"
   }
-  # required_providers {
-  #     azurerm = {
-  #       source  = "hashicorp/azurerm"
-  #       version = ">=3.0.0"
-  #     }
-  #   }  
+  # Set version and source for Azure Provider
+  # Optional but strongly recommended
+  required_providers {
+      azurerm = {
+        source  = "hashicorp/azurerm"
+        version = ">=3.0.0"
+      }
+    }    
 }
 
+# Configure the Azure Provider
 provider "azurerm" {
   features {}
 }
