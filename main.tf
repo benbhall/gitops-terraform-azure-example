@@ -62,4 +62,4 @@ resource "azurerm_linux_function_app" "main" {
 #   app_settings = {
 #     AppInsights_InstrumentationKey = azurerm_application_insights.main.instrumentation_key
 #   }
-# }
+}
