@@ -33,12 +33,12 @@ resource "azurerm_storage_account" "main" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_application_insights" "main" {
-  name                = "${var.prefix}-appinsights"
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  application_type    = "web"
-}
+# resource "azurerm_application_insights" "main" {
+#   name                = "${var.prefix}-appinsights"
+#   resource_group_name = azurerm_resource_group.main.name
+#   location            = azurerm_resource_group.main.location
+#   application_type    = "web"
+# }
 
 resource "azurerm_service_plan" "main" {
   name                = "${var.prefix}-asp"
@@ -59,7 +59,7 @@ resource "azurerm_linux_function_app" "main" {
 
   site_config {}
 
-  app_settings = {
-    AppInsights_InstrumentationKey = azurerm_application_insights.main.instrumentation_key
-  }
-}
+#   app_settings = {
+#     AppInsights_InstrumentationKey = azurerm_application_insights.main.instrumentation_key
+#   }
+# }
