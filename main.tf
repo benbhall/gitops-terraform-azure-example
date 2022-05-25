@@ -36,6 +36,13 @@ resource "azurerm_storage_account" "main" {
   account_replication_type = "LRS"
 }
 
+resource "azurerm_application_insights" "main" {
+  name                = "${local.prefix}-appinsights"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  application_type    = "web"
+}
+
 resource "azurerm_service_plan" "main" {
   name                = "${local.prefix}-asp"
   resource_group_name = azurerm_resource_group.main.name
@@ -54,4 +61,8 @@ resource "azurerm_linux_function_app" "main" {
   storage_account_access_key = azurerm_storage_account.main.primary_access_key
 
   site_config {}
+
+  app_settings = {
+    AppInsights_InstrumentationKey = azurerm_application_insights.main.instrumentation_key
+  }
 }
