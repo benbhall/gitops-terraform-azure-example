@@ -1,12 +1,16 @@
 terraform {
+  locals {
+    location = "uksouth"
+    prefix = "gitopsdemo"
+  }
+
   backend "azurerm" {
     resource_group_name  = "gitopsdemo-tfstates-rg"
     storage_account_name = "gitopsdemostore"
     container_name       = "gitopsdemotfstates"
     key                  = "gitopsdemo.tfstate"
   }
-  # Set version and source for Azure Provider
-  # Optional but strongly recommended
+
   required_providers {
       azurerm = {
         source  = "hashicorp/azurerm"
@@ -15,33 +19,25 @@ terraform {
     }    
 }
 
-# Configure the Azure Provider
 provider "azurerm" {
   features {}
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "${var.prefix}-rg"
-  location = var.location
+  name     = "${local.prefix}-rg"
+  location = local.location
   }
 
 resource "azurerm_storage_account" "main" {
-  name                     = "${var.prefix}storageacct"
+  name                     = "${local.prefix}storageacct"
   resource_group_name      = azurerm_resource_group.main.name
   location                 = azurerm_resource_group.main.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
-# resource "azurerm_application_insights" "main" {
-#   name                = "${var.prefix}-appinsights"
-#   resource_group_name = azurerm_resource_group.main.name
-#   location            = azurerm_resource_group.main.location
-#   application_type    = "web"
-# }
-
 resource "azurerm_service_plan" "main" {
-  name                = "${var.prefix}-asp"
+  name                = "${local.prefix}-asp"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   os_type            = "Linux"
@@ -49,7 +45,7 @@ resource "azurerm_service_plan" "main" {
 }
 
 resource "azurerm_linux_function_app" "main" {
-  name                       = "${var.prefix}-function"
+  name                       = "${local.prefix}-function"
   resource_group_name        = azurerm_resource_group.main.name
   location                   = azurerm_resource_group.main.location
   
@@ -58,8 +54,4 @@ resource "azurerm_linux_function_app" "main" {
   storage_account_access_key = azurerm_storage_account.main.primary_access_key
 
   site_config {}
-
-#   app_settings = {
-#     AppInsights_InstrumentationKey = azurerm_application_insights.main.instrumentation_key
-#   }
 }
